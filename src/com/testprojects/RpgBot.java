@@ -60,7 +60,8 @@ public class RpgBot extends ListenerAdapter {
         switch (firstToken) {
             case "!начать": {
                 if (!Main.arr.containsKey(currentId)) {
-                    gameEvents.initPlayer(currentId, messageChannel, author);
+                    String secondToken = st.nextToken().toLowerCase();
+                    gameEvents.initPlayer(currentId, messageChannel, author, secondToken);
                 }
                 break;
             }
@@ -72,15 +73,15 @@ public class RpgBot extends ListenerAdapter {
                 break;
             }
             case "!статы": {
-                if (Main.arr.containsKey(currentId)){
+                if (Main.arr.containsKey(currentId)) {
                     gameEvents.printStatS(messageChannel, currentId);
                 }
                 break;
             }
-            case "!событие":{
-                if (Main.arr.containsKey(currentId)){
+            case "!событие": {
+                if (Main.arr.containsKey(currentId)) {
                     gameEvents.initEvent(messageChannel, currentId);
-                    if (gameEvents.checkOnDeath(currentId)){
+                    if (gameEvents.checkOnDeath(currentId)) {
                         gameEvents.msgOnDeath(messageChannel, currentId);
                     }
                 }
@@ -99,14 +100,18 @@ public class RpgBot extends ListenerAdapter {
                 }
                 break;
             }
-            case "!команды":{
-                sendPrivateMessage(author, "!начать\n" + "!статы\n" + "!событие\n" + "!данж\n" + "!пвп @Username\n"+
+            case "!команды": {
+                sendPrivateMessage(author, "!начать @Сlass\n" + "!статы\n" + "!событие\n" + "!данж\n" + "!пвп @Username\n" +
+                        "Class - класс героя, пока что есть 4 класса: маг, паладин, лучник и разбойник.\n" +
+                        "Маг имеет шанс скастовать очень сильную атаку или охладить, уменьшив атаку. Паладин может застанить на одинх ход или увеличить защиту на текущий бой.\n" +
+                        "Лучник может выпустить очередь из стрел или дать очень мощный выстрел, также может увеличить уклонение на текущий бой."+
+                        "Разбойник может увеличить атаку или уклонение на текущий бой. Все скилы имеют одинаковый шанс быть использованными." +
                         "Username - никнейм пользователя дискорд, которому бросается вызов.\n" +
                         "Существуют некоторая вероятность случайной смерти в событих, встретить босса в данже, и даже уйти живым из проигранного боя.\n" +
                         "В пвп режиме шанс критического удара и уворота увеличены, будьте аккуратны. \nУдачи!");
                 break;
             }
-            case "!пвп":{
+            case "!пвп": {
                 if (Main.arr.containsKey(currentId)) {
                     stringBuilder.append(msg);
                     String enemyName = stringBuilder.substring(6, stringBuilder.length());
@@ -132,7 +137,8 @@ public class RpgBot extends ListenerAdapter {
                         if (gameEvents.checkOnDeath(enemyId)) {
                             gameEvents.msgOnDeath(messageChannel, enemyId);
                         }
-                    } else messageChannel.sendMessage("<@" + Main.arr.get(currentId).getId() + "> невозможно провести бой").queue();
+                    } else
+                        messageChannel.sendMessage("<@" + Main.arr.get(currentId).getId() + "> невозможно провести бой").queue();
                 }
             }
             default: {
@@ -141,83 +147,9 @@ public class RpgBot extends ListenerAdapter {
         }
     }
 
-
-
-        /*else if (msg.equals("!событие") && Main.arr.containsKey(currentId)) {
-            stringBuilder.append("<@")
-                    .append(currentId)
-                    .append(">\n")
-                    .append(gameEvents.getGameEvent(currentId))
-                    .append(printStats(currentId));
-            messageChannel.sendMessage(stringBuilder.toString()).queue();
-            stringBuilder.delete(0, stringBuilder.length() - 1);
-
-            if (gameEvents.checkOnDeath(currentId)) {
-                stringBuilder.append("<@")
-                        .append(currentId)
-                        .append("> умер");
-                messageChannel.sendMessage(stringBuilder.toString()).queue();
-                stringBuilder.delete(0, stringBuilder.length() - 1);
-            }
-
-        } else if (msg.equals("!данж") && Main.arr.containsKey(currentId)) {
-            GameMob gameMob = new GameMob();
-            gameMob.initmob(currentId);
-
-            stringBuilder.append(createHelloMob(gameMob, currentId));
-            stringBuilder.append(fightVSMob(gameMob, currentId));
-
-            messageChannel.sendMessage(stringBuilder.toString()).queue();
-            stringBuilder.delete(0, stringBuilder.length() - 1);
-
-            if (gameEvents.checkOnDeath(currentId)) {
-                stringBuilder.append("<@")
-                        .append(currentId)
-                        .append("> умер");
-                messageChannel.sendMessage(stringBuilder.toString()).queue();
-                stringBuilder.delete(0, stringBuilder.length() - 1);
-            }
-        } else if (msg.equals("!команды")) {
-            sendPrivateMessage(author, "!начать\n" + "!статы\n" + "!событие\n" + "!данж\n" + "!пвп @Username\n"+
-                    "Username - никнейм пользователя дискорд, которому бросается вызов.\n" +
-                    "Существуют некоторая вероятность случайной смерти в событих, встретить босса в данже, и даже уйти живым из проигранного боя.\n" +
-                    "В пвп режиме шанс критического удара и уворота увеличены, будьте аккуратны. \nУдачи!");
-        } else if (msg.startsWith("!пвп")) {
-            stringBuilder.append(msg);
-            String enemyName = stringBuilder.substring(6, stringBuilder.length());
-            stringBuilder.delete(0, stringBuilder.length());
-            String enemyId = foundEnemy(enemyName);
-            if (enemyId != null && !enemyId.equals(currentId)) {
-                 stringBuilder.append("**<@").append(Main.arr.get(currentId).getId())
-                        .append("> уровень ").append(Main.arr.get(currentId).getLvl()).append("** ")
-                        .append(" вызывает на бой ")
-                        .append("**<@").append(Main.arr.get(enemyId).getId())
-                        .append("> уровень ").append(Main.arr.get(enemyId).getLvl()).append("**\n")
-                        .append("***БОЙ***\n");
-                stringBuilder.append(initPVP(currentId, enemyId));
-                messageChannel.sendMessage(stringBuilder.toString()).queue();
-                stringBuilder.delete(0, stringBuilder.length());
-
-                if (gameEvents.checkOnDeath(currentId)) {
-                    stringBuilder.append("<@")
-                            .append(currentId)
-                            .append("> умер");
-                    messageChannel.sendMessage(stringBuilder.toString()).queue();
-                    stringBuilder.delete(0, stringBuilder.length());
-                }
-                if (gameEvents.checkOnDeath(enemyId)) {
-                    stringBuilder.append("<@")
-                            .append(enemyId)
-                            .append("> умер");
-                    messageChannel.sendMessage(stringBuilder.toString()).queue();
-                    stringBuilder.delete(0, stringBuilder.length());
-                }
-            } else System.out.println("<@" + Main.arr.get(currentId).getId() + "> невозможно провести бой");
-        }
-    }
-    */
-
-    /**PVP
+    /**
+     * PVP
+     *
      * @param currentId
      * @param enemyId
      * @return string with fight log
@@ -312,7 +244,9 @@ public class RpgBot extends ListenerAdapter {
         return stringBuilder.toString();
     }
 
-    /** check enemy in hashmap
+    /**
+     * check enemy in hashmap
+     *
      * @param enemyName
      * @return
      */
@@ -325,7 +259,9 @@ public class RpgBot extends ListenerAdapter {
         return null;
     }
 
-    /**Sending private message
+    /**
+     * Sending private message
+     *
      * @param user
      * @param content
      */
@@ -340,6 +276,7 @@ public class RpgBot extends ListenerAdapter {
 
     /**
      * Сосбщение о мобе
+     *
      * @param gameMob   экземпляр класса моба
      * @param currentId id автора
      * @return сообщение о встрече и статы моба
@@ -394,6 +331,8 @@ public class RpgBot extends ListenerAdapter {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("**БОЙ**\n");
 
+        String type = Main.arr.get(currentId).getType();
+        double chanseToSkill = Main.arr.get(currentId).getChanseToSkill();
         int maxHP = Main.arr.get(currentId).getMaxHP();
         int currentHP = Main.arr.get(currentId).getCurrentHP();
         int attack = Main.arr.get(currentId).getAttack();
@@ -408,6 +347,8 @@ public class RpgBot extends ListenerAdapter {
         double mobEva = gameMob.getEva();
         double mobCritChanse = gameMob.getCritChanse();
 
+        boolean stunStatus = false;
+
         while (mobHp > 0) {
             if (currentHP < 0) break;
 
@@ -416,14 +357,187 @@ public class RpgBot extends ListenerAdapter {
                         .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
                         .append("***промахивается***.\n");
             } else { //если попал
-                if (Math.random() >= (1 - critChanse)) { //если крит
+                if (Math.random() >= 1 - chanseToSkill) { // если скилл
+                    switch (type) {
+                        case "маг": {
+                            if (Math.random() >= 1 - 0.5) { //если первый скилл
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    mobHp -= (attack * 4 + acc / 100) * 2;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" кастует фаербол ***критический удар***. ")
+                                            .append("**").append(" -").append(((attack * 4 + acc / 100) * 2)).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит
+                                    mobHp -= attack * 4 + acc / 100;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" кастует фаербол. ")
+                                            .append("**").append(" -").append((attack * 4 + acc / 100)).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            } else {
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    mobAttack -= mobAttack / 33;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" охлаждает противника ***критический удар***. ")
+                                            .append("**").append(" -").append(mobAttack / 33).append(" к атаке ").append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит
+                                    mobAttack -= mobAttack / 17;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" охлаждает противника. ")
+                                            .append("**").append(" -").append(mobAttack / 17).append("к атаке ").append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            }
+                            break;
+                        }
+                        case "паладин": {
+                            if (Math.random() >= 1 - 0.5) { //если первый скилл
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    stunStatus = true;
+                                    mobHp -= (attack + acc / 100) * 2;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" оглушает противника ***критический удар***. ")
+                                            .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит
+                                    stunStatus = true;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" оглушает противника. ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            } else {
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    def += def / 4;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" кастует защиту ***критический удар*** ")
+                                            .append("**").append(" +").append(def / 4).append(" к защите. ").append("**")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит
+                                    def += def / 8;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" кастует защиту ***критический удар*** ")
+                                            .append("**").append(" +").append(def / 8).append(" к защите. ").append("**")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            }
+                            break;
+                        }
+                        case "лучник": {
+                            if (Math.random() >= 1 - 0.5) { //если первый скилл
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    mobHp -= (attack + acc / 100) * 6;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" орлиное зрение позволяет нанести 3 ***критических удара***. ")
+                                            .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
+                                            .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
+                                            .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит\
+                                    mobHp -= (attack + acc / 100) * 3;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" орлиное зрение позволяет нанести ***особый критический удар***. ")
+                                            .append("**").append(" -").append(((attack + acc / 100) * 3)).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            } else {
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    eva += eva / 5;
+                                    mobHp -= (attack + acc / 100);
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" увеличивает шанс уклониться ***критический удар*** ")
+                                            .append("**").append(" +").append((float) (eva / 5)).append(" к уклонению. ").append("**")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит
+                                    eva += eva / 10;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" увеличивает шанс уклониться ")
+                                            .append("**").append(" +").append((float)(eva / 10)).append(" к уклонению. ").append("**")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            }
+                            break;
+                        }
+                        case "разбойник": {
+                            if (Math.random() >= 1 - 0.5) { //если первый скилл
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    attack += attack / 5;
+                                    mobHp -= (attack + acc / 100) * 2;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" отравляет клинок ***критический удар***. ")
+                                            .append("**").append(" +").append(attack / 5).append(" к урону. ").append("**")
+                                            .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит\
+                                    attack += attack / 5;
+                                    mobHp -= (attack + acc / 100) * 3;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" отравляет клинок ")
+                                            .append("**").append(" +").append(attack / 5).append(" к урону. ").append("**")
+                                            .append("**").append(" -").append(((attack + acc / 100))).append("**HP ")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            } else {
+                                if (Math.random() >= (1 - critChanse)) { //скилл если крит
+                                    eva += eva / 5;
+                                    mobHp -= (attack + acc / 100);
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" увеличивает шанс уклониться ***критический удар*** ")
+                                            .append("**").append(" +").append((float)eva / 5).append(" к уклонению. ").append("**")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                } else {    //скилл если не крит
+                                    eva += eva / 10;
+                                    stringBuilder.append(Main.arr.get(currentId).getName())
+                                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                            .append(" увеличивает шанс уклониться ")
+                                            .append("**").append(" +").append((float)eva / 10).append(" к уклонению. ").append("**")
+                                            .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                                }
+                            }
+                            break;
+                        }
+                        default: {
+                            if (Math.random() >= (1 - critChanse)) { //обычная атака если крит
+                                mobHp -= (attack + acc / 100) * 2;
+                                stringBuilder.append(Main.arr.get(currentId).getName())
+                                        .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                        .append(" наносит ***критический удар***. ")
+                                        .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
+                                        .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                            } else {    //обычная атака если не крит
+                                mobHp -= attack + acc / 100;
+                                stringBuilder.append(Main.arr.get(currentId).getName())
+                                        .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                        .append(" наносит удар. ")
+                                        .append("**").append(" -").append((attack + acc / 100)).append("**HP ")
+                                        .append(mobName).append("**[").append(mobHp).append("]**HP\n");
+                            }
+                            break;
+                        }
+                    }
+                } else if (Math.random() >= (1 - critChanse)) { //обычная атака если крит
                     mobHp -= (attack + acc / 100) * 2;
                     stringBuilder.append(Main.arr.get(currentId).getName())
                             .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
                             .append(" наносит ***критический удар***. ")
                             .append("**").append(" -").append(((attack + acc / 100) * 2)).append("**HP ")
                             .append(mobName).append("**[").append(mobHp).append("]**HP\n");
-                } else {    //если не крит
+                } else {    //обычная атака если не крит
                     mobHp -= attack + acc / 100;
                     stringBuilder.append(Main.arr.get(currentId).getName())
                             .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
@@ -432,24 +546,29 @@ public class RpgBot extends ListenerAdapter {
                             .append(mobName).append("**[").append(mobHp).append("]**HP\n");
                 }
             }
-            if (mobHp < 0) break;
 
-            if (Math.random() >= (1 - eva)) { //если уворот
-                stringBuilder.append(mobName).append("**[").append(mobHp).append("]HP**").append(" ***промахивается***.\n")
-                        .append(Main.arr.get(currentId).getName());
-            } else { //если попал
-                if (Math.random() >= (1 - mobCritChanse)) {
-                    currentHP -= (mobAttack - def / 5) * 2;
-                    stringBuilder.append(mobName).append("**[").append(mobHp).append("]HP**").append(" наносит ***критический удар***. ")
-                            .append(Main.arr.get(currentId).getName())
-                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
-                            .append(" **-").append(((mobAttack - def / 5) * 2)).append("**HP\n");
-                } else {
-                    currentHP -= mobAttack - def / 5;
-                    stringBuilder.append(mobName).append("**[").append(mobHp).append("]HP**").append(" наносит удар. ")
-                            .append(Main.arr.get(currentId).getName())
-                            .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
-                            .append(" **-").append((mobAttack - def / 5)).append("**HP\n");
+            if (mobHp < 0) break;
+            if (stunStatus) {
+                stunStatus = false;
+                continue;
+            }else{
+                if (Math.random() >= (1 - eva)) { //если уворот
+                    stringBuilder.append(mobName).append("**[").append(mobHp).append("]HP**").append(" ***промахивается***.\n")
+                            .append(Main.arr.get(currentId).getName());
+                } else { //если попал
+                    if (Math.random() >= (1 - mobCritChanse)) {
+                        currentHP -= (mobAttack - def / 5) * 2;
+                        stringBuilder.append(mobName).append("**[").append(mobHp).append("]HP**").append(" наносит ***критический удар***. ")
+                                .append(Main.arr.get(currentId).getName())
+                                .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                .append(" **-").append(((mobAttack - def / 5) * 2)).append("**HP\n");
+                    } else {
+                        currentHP -= mobAttack - def / 5;
+                        stringBuilder.append(mobName).append("**[").append(mobHp).append("]HP**").append(" наносит удар. ")
+                                .append(Main.arr.get(currentId).getName())
+                                .append("**[").append(currentHP).append("/").append(maxHP).append("]**").append("HP")
+                                .append(" **-").append((mobAttack - def / 5)).append("**HP\n");
+                    }
                 }
             }
         }

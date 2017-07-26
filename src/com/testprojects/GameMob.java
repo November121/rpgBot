@@ -41,13 +41,13 @@ public class GameMob {
         if (Main.arr.get(currentId).lvl >= 10) {
             if (Math.random() >= (1 - chanseToBoss)) {
                 this.mobName = bossNames[random.nextInt(5)];
-                this.maxHp = random.nextInt(50) + Main.arr.get(currentId).attack * 5;
+                this.maxHp = random.nextInt(50) + Main.arr.get(currentId).getAttack() * 5;
                 this.attack = random.nextInt(50) + Main.arr.get(currentId).getMaxHP() / 5;
                 this.eva = (random.nextInt(15) + 25) * 0.01;
                 this.critChanse = (random.nextInt(15) + 20) * 0.01;
             } else {
                 this.mobName = mobNames[random.nextInt(12)];
-                this.maxHp = random.nextInt(40) + Main.arr.get(currentId).attack * 5 / 2;
+                this.maxHp = random.nextInt(40) + Main.arr.get(currentId).getAttack() * 5 / 2;
                 this.attack = random.nextInt(40) + Main.arr.get(currentId).getMaxHP() / 7;
                 this.eva = (random.nextInt(20) + 15) * 0.01;
                 this.critChanse = (random.nextInt(10) + 20) * 0.01;

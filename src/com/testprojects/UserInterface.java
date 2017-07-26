@@ -31,6 +31,13 @@ public class UserInterface implements Serializable {
     int lvl = 1;
     private String type = "none";
 
+    String[] types = {"маг",
+            "паладин",
+            "лучник",
+            "разбойник",
+            "999"
+    };
+
     public void upExp(int exp) {
         this.exp += exp;
     }
@@ -50,6 +57,7 @@ public class UserInterface implements Serializable {
     double eva = 0.10;
     int acc = 95;
     double critChanse = 0.11;
+    private double chanseToSkill = 0.2;
 
     public int getMaxHP() {
         return this.maxHP;
@@ -103,6 +111,52 @@ public class UserInterface implements Serializable {
                 this.attack += 4;
                 this.def += 3;
                 this.acc += 10;
+                this.critChanse += 0.005;
+                this.eva += 0.003;
+                break;
+            }
+            case "маг": {
+                this.lvl++;
+                this.maxHP += 4;
+                this.currentHP = this.maxHP;
+                this.attack += 7;
+                this.def += 2;
+                this.acc += 20;
+                this.critChanse += 0.007;
+                this.eva += 0.002;
+                break;
+            }
+            case "паладин": {
+                this.lvl++;
+                this.maxHP += 20;
+                this.currentHP = this.maxHP;
+                this.attack += 3;
+                this.def += 8;
+                this.acc += 10;
+                this.critChanse += 0.005;
+                this.eva += 0.002;
+                break;
+            }
+            case "лучник": {
+                this.lvl++;
+                this.maxHP += 5;
+                this.currentHP = this.maxHP;
+                this.attack += 8;
+                this.def += 2;
+                this.acc += 25;
+                this.critChanse += 0.008;
+                this.eva += 0.005;
+                break;
+            }
+            case "разбойник": {
+                this.lvl++;
+                this.maxHP += 8;
+                this.currentHP = this.maxHP;
+                this.attack += 5;
+                this.def += 4;
+                this.acc += 15;
+                this.critChanse += 0.006;
+                this.eva += 0.005;
                 break;
             }
             default: {
@@ -112,6 +166,8 @@ public class UserInterface implements Serializable {
                 this.attack += 4;
                 this.def += 2;
                 this.acc += 10;
+                this.critChanse += 0.005;
+                this.eva += 0.003;
                 break;
             }
         }
@@ -123,5 +179,14 @@ public class UserInterface implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public double getChanseToSkill() {
+        return chanseToSkill;
+    }
+
+    public void setChanseToSkill(double chanseToSkill) {
+
+        this.chanseToSkill = chanseToSkill;
     }
 }

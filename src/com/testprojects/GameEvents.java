@@ -19,18 +19,19 @@ class GameEvents {
             "Вы отдохнули в городе, восстановлено HP",
             "Смерть приходит внезапно"};
 
-    /**Роллит событие
+    /**
+     * Роллит событие
+     *
      * @param id
      * @return строку события
      */
     private String getGameEvent(String id) {
         Random rand = new Random(System.currentTimeMillis());
         int roll = rand.nextInt(7);
-        if(Math.random() >= 1 - 0.02){
+        if (Math.random() >= 1 - 0.02) {
             Main.arr.get(id).setCurrentHP(-Main.arr.get(id).getCurrentHP());
             return array[7];
-        }
-        else {
+        } else {
             switch (roll) {
                 case 0: {
                     Main.arr.get(id).setCurrentHP(-10);
@@ -77,7 +78,9 @@ class GameEvents {
         return array[roll];
     }
 
-    /** Проверяет хп, удаляет убитого персонажа
+    /**
+     * Проверяет хп, удаляет убитого персонажа
+     *
      * @param id
      * @return
      */
@@ -89,7 +92,9 @@ class GameEvents {
         } else return false;
     }
 
-    /** Выводит сообщение о смерти
+    /**
+     * Выводит сообщение о смерти
+     *
      * @param messageChannel
      * @param currentId
      */
@@ -101,17 +106,42 @@ class GameEvents {
         messageChannel.sendMessage(stringBuilder.toString()).queue();
     }
 
-    /** Заносит экземлпяр userinterface в мап, выводит сообщение
+    /**
+     * Заносит экземлпяр userinterface в мап, выводит сообщение
+     *
      * @param currentId
      * @param messageChannel
      * @param author
      */
-    void initPlayer(String currentId, MessageChannel messageChannel, User author) {
+    void initPlayer(String currentId, MessageChannel messageChannel, User author, String secondToken) {
         StringBuilder stringBuilder = new StringBuilder();
         UserInterface user = new UserInterface();
         user.setId(currentId);
         user.setName(author.getName());
-        user.setType("999");
+
+        switch (secondToken) {
+            case "маг":{
+                user.setType(user.types[0]);
+                break;
+            }
+            case "паладин": {
+                user.setType(user.types[1]);
+                break;
+            }
+            case "лучник": {
+                user.setType(user.types[2]);
+                break;
+            }
+            case "разбойник": {
+                user.setType(user.types[3]);
+                break;
+            }
+            default: {
+                user.setType(user.types[4]);
+                break;
+            }
+        }
+
         Main.arr.put(currentId, user);
 
         stringBuilder.append("<@")
@@ -121,7 +151,9 @@ class GameEvents {
         messageChannel.sendMessage(stringBuilder.toString()).queue();
     }
 
-    /** Выводит сообщение о статах
+    /**
+     * Выводит сообщение о статах
+     *
      * @param messageChannel
      * @param currentId
      */
@@ -134,23 +166,28 @@ class GameEvents {
         messageChannel.sendMessage(stringBuilder.toString()).queue();
     }
 
-    /** Формирует сообщение о статах
+    /**
+     * Формирует сообщение о статах
+     *
      * @param currentId
      * @return
      */
     private String printStats(String currentId) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\n**Характеристики:**\n")
-                .append(Main.arr.get(currentId).name).append(" уровень ").append(Main.arr.get(currentId).lvl).append("\n")
+                .append(Main.arr.get(currentId).name).append(" ").append(Main.arr.get(currentId).getType())
+                .append(" уровень ").append(Main.arr.get(currentId).lvl).append("\n")
                 .append(Main.arr.get(currentId).currentHP).append("\\").append(Main.arr.get(currentId).maxHP).append(" HP\n")
                 .append(Main.arr.get(currentId).attack).append(" Урон\n")
                 .append(Main.arr.get(currentId).def).append(" Броня\n")
-                .append(Main.arr.get(currentId).eva).append(" Уклонение\n")
+                .append(((float) Main.arr.get(currentId).eva)).append(" Уклонение\n")
                 .append(Main.arr.get(currentId).acc).append(" Точность\n");
         return stringBuilder.toString();
     }
 
-    /** Формирует и выводит событие
+    /**
+     * Формирует и выводит событие
+     *
      * @param messageChannel
      * @param currentId
      */
