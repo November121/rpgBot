@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args){
         try {
             JDA jda = new JDABuilder(AccountType.BOT)
-                    .setToken("MzM2Nzg5NTQ0MjYxMjU1MTY4.DFpqzQ.RGbU69ENtrWAodmEclcXWocYWRc")
+                    .setToken("")
                     .addEventListener(new RpgBot())
                     .buildBlocking();
         }catch (InterruptedException e) {
