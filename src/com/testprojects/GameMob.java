@@ -7,7 +7,7 @@ import java.util.Random;
  * Описание класса моба
  */
 
-public class GameMob {
+class GameMob {
 
     String[] bossNames = {"Ensis",
             "Огр",
@@ -15,7 +15,7 @@ public class GameMob {
             "KUMA"
     };
 
-    private double chanseToBoss = 0.11;
+    private double chanseToBoss = 0.07;
     private String mobName;
     private int maxHp;
     private int attack;
@@ -40,44 +40,44 @@ public class GameMob {
         Random random = new Random(System.currentTimeMillis());
         if (Main.arr.get(currentId).lvl >= 10) {
             if (Math.random() >= (1 - chanseToBoss)) {
-                this.mobName = bossNames[random.nextInt(5)];
-                this.maxHp = random.nextInt(50) + Main.arr.get(currentId).getAttack() * 5;
-                this.attack = random.nextInt(50) + Main.arr.get(currentId).getMaxHP() / 5;
-                this.eva = (random.nextInt(15) + 25) * 0.01;
-                this.critChanse = (random.nextInt(15) + 20) * 0.01;
+                this.mobName = bossNames[random.nextInt(3)];
+                this.maxHp = random.nextInt(250) + Main.arr.get(currentId).getAttack() * 8;
+                this.attack = random.nextInt(150) + Main.arr.get(currentId).getMaxHP() / 3;
+                this.eva = (float)(random.nextInt(25) + 25) * 0.01;
+                this.critChanse = (float)(random.nextInt(20) + 60) * 0.01;
             } else {
                 this.mobName = mobNames[random.nextInt(12)];
-                this.maxHp = random.nextInt(40) + Main.arr.get(currentId).getAttack() * 5 / 2;
-                this.attack = random.nextInt(40) + Main.arr.get(currentId).getMaxHP() / 7;
-                this.eva = (random.nextInt(20) + 15) * 0.01;
-                this.critChanse = (random.nextInt(10) + 20) * 0.01;
+                this.maxHp = random.nextInt(40) + Main.arr.get(currentId).getAttack() * 6;
+                this.attack = random.nextInt(30) + Main.arr.get(currentId).getMaxHP() / 7;
+                this.eva = (float)(random.nextInt(20) + 15) * 0.01;
+                this.critChanse = (float)(random.nextInt(10) + 20) * 0.01;
             }
         } else {
             this.mobName = mobNames[random.nextInt(12)];
             this.maxHp = random.nextInt(20) + Main.arr.get(currentId).getAttack() * 2;
             this.attack = random.nextInt(1) + Main.arr.get(currentId).getMaxHP() / 7;
-            this.eva = (random.nextInt(10) + 10) * 0.01;
-            this.critChanse = (random.nextInt(10) + 20) * 0.01;
+            this.eva = (float)(random.nextInt(10) + 10) * 0.01;
+            this.critChanse = (float)(random.nextInt(10) + 20) * 0.01;
         }
     }
 
-    public int getMaxHp() {
+    int getMaxHp() {
         return maxHp;
     }
 
-    public int getAttack() {
+    int getAttack() {
         return attack;
     }
 
-    public double getEva() {
+    double getEva() {
         return eva;
     }
 
-    public double getCritChanse() {
+    double getCritChanse() {
         return critChanse;
     }
 
-    public String getMobName() {
+    String getMobName() {
         return mobName;
     }
 }

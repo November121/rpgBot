@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class UserInterface implements Serializable {
 
     // MEMBER NAME EFFECTIVENAME
-    String id;
+    private String id;
     String name;
     ArrayList<String> messages;
 
@@ -44,7 +44,7 @@ public class UserInterface implements Serializable {
     public int getExp() {
         return exp;
     }
-    public int getLvl() {
+    int getLvl() {
         return lvl;
     }
 
@@ -57,52 +57,52 @@ public class UserInterface implements Serializable {
     double eva = 0.10;
     int acc = 95;
     double critChanse = 0.11;
-    private double chanseToSkill = 0.2;
+    private double chanseToSkill = 0.5;
 
-    public int getMaxHP() {
+    int getMaxHP() {
         return this.maxHP;
     }
     public void upMaxHP(int upHP) {
         this.maxHP += upHP;
     }
-    public int getCurrentHP() {
+    int getCurrentHP() {
         return this.currentHP;
     }
-    public void setCurrentHP(int upHp) {
+    void setCurrentHP(int upHp) {
         this.currentHP += upHp;
     }
-    public int getAttack() {
+    int getAttack() {
         return attack;
     }
-    public void upAttack(int upAttack) {
+    void upAttack(int upAttack) {
         this.attack += upAttack;
     }
-    public int getDef() {
+    int getDef() {
         return this.def;
     }
-    public void upDef(int upDef) {
+    void upDef(int upDef) {
         this.def += upDef;
     }
-    public double getEva(){
+    double getEva(){
         return this.eva;
     }
     public void upEva(int upEvasion){
         this.eva += upEvasion;
     }
-    public int getAcc(){
+    int getAcc(){
         return this.acc;
     }
-    public void setAcc(int acc){
+    void setAcc(int acc){
         this.acc += acc;
     }
-    public double getCritChanse(){
+    double getCritChanse(){
         return this.critChanse;
     }
-    public void setCritChanse(double critChanse){
+    void setCritChanse(double critChanse){
         this.critChanse += critChanse;
     }
 
-    public void lvlup() {
+    void lvlup() {
         switch (this.type) {
             case "999": {
                 this.lvl++;
@@ -131,7 +131,7 @@ public class UserInterface implements Serializable {
                 this.maxHP += 20;
                 this.currentHP = this.maxHP;
                 this.attack += 3;
-                this.def += 8;
+                this.def += 12;
                 this.acc += 10;
                 this.critChanse += 0.005;
                 this.eva += 0.002;
@@ -173,15 +173,15 @@ public class UserInterface implements Serializable {
         }
     }
 
-    public String getType() {
+    String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    void setType(String type) {
         this.type = type;
     }
 
-    public double getChanseToSkill() {
+    double getChanseToSkill() {
         return chanseToSkill;
     }
 

@@ -22,7 +22,7 @@ class GameEvents {
     /**
      * Роллит событие
      *
-     * @param id
+     * @param id currentId
      * @return строку события
      */
     private String getGameEvent(String id) {
